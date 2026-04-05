@@ -95,19 +95,3 @@ fitness site/
 ```
 
 > Скриншоты отзывов открываются в модальном окне — файлы должны лежать рядом с `index.html`.
-
----
-
-## Деплой на GitHub Pages
-
-1. Убедиться, что SSH-конфиг настроен (`~/.ssh/da_roadmap_key`).
-2. Инициализировать репозиторий и запушить:
-   ```bash
-   git init
-   git add .
-   git commit -m "init"
-   git remote add origin git@github.com:konevs/fitness-site.git
-   git push -u origin main
-   ```
-3. В настройках репозитория: **Settings → Pages → Branch: main / (root) → Save**.
-4. Сайт будет доступен по адресу: `https://konevs.github.io/fitness-site/`
