@@ -420,6 +420,66 @@
       object-fit: cover;
       display: block;
     }
+    .iphone-expand-btn {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0,0,0,0);
+      transition: background 0.2s;
+      cursor: pointer;
+      border: none;
+      border-radius: inherit;
+    }
+    .iphone-expand-btn:hover { background: rgba(0,0,0,0.35); }
+    .iphone-expand-btn svg { opacity: 0; transition: opacity 0.2s; pointer-events: none; }
+    .iphone-expand-btn:hover svg { opacity: 1; }
+    /* Video modal */
+    .video-modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      background: rgba(0,0,0,0.92);
+      align-items: center;
+      justify-content: center;
+    }
+    .video-modal.open { display: flex; }
+    .video-modal-inner {
+      position: relative;
+      width: min(90vw, 500px);
+      max-height: 90vh;
+      border-radius: 16px;
+      overflow: hidden;
+      background: #000;
+    }
+    .video-modal-inner video {
+      width: 100%;
+      height: 100%;
+      display: block;
+      max-height: 90vh;
+      object-fit: contain;
+    }
+    .video-modal-close {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border: none;
+      background: rgba(255,255,255,0.15);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      backdrop-filter: blur(8px);
+      transition: background 0.2s;
+      z-index: 10;
+    }
+    .video-modal-close:hover { background: rgba(255,255,255,0.3); }
     /* Side button accents */
     .iphone-frame::before {
       content: '';
@@ -745,6 +805,7 @@
           <!-- Screen with video -->
           <div class="iphone-screen">
             <video
+              id="preview-video"
               src="technique.mp4"
               autoplay
               muted
@@ -753,6 +814,16 @@
               class="iphone-video"
               aria-label="Демонстрация разбора техники упражнений"
             ></video>
+            <button
+              class="iphone-expand-btn"
+              onclick="openVideoModal()"
+              aria-label="Открыть видео на весь экран со звуком"
+            >
+              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10" fill="rgba(0,0,0,0.4)"/>
+                <polygon points="10,8 16,12 10,16" fill="#fff" stroke="none"/>
+              </svg>
+            </button>
           </div>
         </div>
       </div>
@@ -1252,6 +1323,52 @@
 
   document.addEventListener('keydown', e => {
     if (e.key === 'Escape' && certModal.classList.contains('open')) closeCertModal();
+  });
+</script>
+
+<!-- Video modal -->
+<div id="video-modal" class="video-modal" role="dialog" aria-modal="true" aria-label="Видео разбора техники">
+  <div class="video-modal-inner">
+    <button class="video-modal-close" id="video-modal-close" aria-label="Закрыть видео">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+        <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+      </svg>
+    </button>
+    <video
+      id="modal-video"
+      src="technique.mp4"
+      controls
+      playsinline
+      style="width:100%;display:block;max-height:90vh;object-fit:contain;"
+      aria-label="Разбор техники упражнений со звуком"
+    ></video>
+  </div>
+</div>
+
+<script>
+  const videoModal = document.getElementById('video-modal');
+  const modalVideo = document.getElementById('modal-video');
+  const videoModalClose = document.getElementById('video-modal-close');
+
+  function openVideoModal() {
+    videoModal.classList.add('open');
+    modalVideo.currentTime = 0;
+    modalVideo.play();
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeVideoModal() {
+    videoModal.classList.remove('open');
+    modalVideo.pause();
+    document.body.style.overflow = '';
+  }
+
+  videoModalClose.addEventListener('click', closeVideoModal);
+  videoModal.addEventListener('click', e => {
+    if (e.target === videoModal) closeVideoModal();
+  });
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && videoModal.classList.contains('open')) closeVideoModal();
   });
 </script>
 </body>
